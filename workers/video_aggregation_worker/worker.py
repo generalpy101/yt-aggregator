@@ -21,6 +21,7 @@ def current_time_RFC3339():
     return datetime.utcnow().isoformat("T") + "Z"
     
 def main():
+    print("Starting video aggregation worker...")
     started_at = current_time_RFC3339()
 
     last_requested_at = started_at
@@ -34,5 +35,3 @@ def main():
             print(f"An error occurred: {e}")
         finally:
             time.sleep(VIDEO_AGGREGATION_FREQUENCY)
-            
-main()

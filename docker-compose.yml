@@ -1,0 +1,12 @@
+version: '3.8'
+services:
+  api:
+    image: yt-aggregator
+    build: .
+    command: ["bash", "-c", "sleep 5"]
+
+  video-aggregation-worker:
+    image: yt-aggregator
+    command: ["bash", "-c", "sleep 5 && video_aggregation_worker"]
+    env_file:
+      - dev/configs/yt.env
