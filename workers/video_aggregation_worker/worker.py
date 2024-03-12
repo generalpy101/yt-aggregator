@@ -20,11 +20,11 @@ VIDEO_AGGREGATION_API_KEY = os.getenv("VIDEO_AGGREGATION_API_KEY", "YOUR_API_KEY
 VIDEO_SEARCH_QUERY = os.getenv("VIDEO_SEARCH_QUERY", "songs")
 
 app = create_app(config_class=DevConfig)
+logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
-logger.level = logging.DEBUG
 
 def aggregate_videos(published_after):
-    logger.debug("Aggregating videos...")
+    logger.info("Aggregating videos...")
     response = requests.get(f"{VIDEO_AGGREGATION_API}search?q={VIDEO_SEARCH_QUERY}&part=snippet&type=video&order=date&key={VIDEO_AGGREGATION_API_KEY}&publishedAfter={published_after}")
     
     return response.json()
@@ -33,7 +33,7 @@ def current_time_RFC3339():
     return datetime.utcnow().isoformat("T") + "Z"
     
 def main():
-    logger.debug("Starting video aggregation worker...")
+    logger.info("Starting video aggregation worker...")
     started_at = current_time_RFC3339()
 
     last_requested_at = started_at

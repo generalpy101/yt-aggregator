@@ -23,7 +23,7 @@ services:
 
   video-aggregation-worker:
     image: yt-aggregator
-    command: ["bash", "-c", "sleep 10 && video_aggregation_worker"]
+    command: ["bash", "-c", "sleep 10 && PYTHONUNBUFFERED=1 video_aggregation_worker"]
     env_file:
       - dev/configs/yt.env
       - dev/configs/db.env
