@@ -2,6 +2,7 @@ import os
 
 from marshmallow import Schema
 
+from flask import request
 from flask.views import MethodView
 
 from core.views.response import APIListResponse, APIDataResponse
@@ -31,8 +32,8 @@ class BaseView(MethodView):
                 # And proper authorization
                 return APIDataResponse({})
             else:
-                limit = int(kwargs.get("limit", self.paginate_by))
-                offset = int(kwargs.get("offset", 0))
+                limit = int(request.args.get("limit", self.paginate_by))
+                offset = int(request.args.get("offset", 0))
                 
                 if self.get_filters:
                     objects = self.model.filter(self.get_filters)
