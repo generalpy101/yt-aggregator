@@ -1,5 +1,6 @@
 from db import db
 from db.models.base import Base
+from sqlalchemy.dialects.postgresql import JSON
 
 class VideoModel(Base):
     __tablename__ = 'videos'
@@ -8,7 +9,7 @@ class VideoModel(Base):
     title = db.Column(db.String(255))
     description = db.Column(db.String(2047))
     published_at = db.Column(db.DateTime)
-    thumbnail_url = db.Column(db.String(255))
+    thumbnails = db.Column(JSON)
 
     def __init__(self, *args, **kwargs):
         for key, value in kwargs.items():

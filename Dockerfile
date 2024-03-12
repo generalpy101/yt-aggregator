@@ -17,7 +17,12 @@ ADD ./api /yt-app/api
 ADD ./db /yt-app/db
 ADD ./workers /yt-app/workers
 ADD ./mock /yt-app/mock
+ADD ./core /yt-app/core
+ADD ./migrations /yt-app/migrations
+ADD ./run.sh /yt-app
 
 RUN pip install -e .
+
+ENV FLASK_APP=api.server.py
 
 CMD ["/bin/bash"]

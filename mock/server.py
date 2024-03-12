@@ -4,7 +4,7 @@ from enum import Enum
 from datetime import datetime, timedelta
 from flask import Flask, jsonify
 
-from mock.schema import YoutubeVideoSchema, YoutubeSearchSchema, YoutubeIdSchema, YoutubeSnippetSchema
+from core.schemas.youtube_search_schema import YoutubeVideoSchema, YoutubeSearchSchema, YoutubeIdSchema, YoutubeSnippetSchema
 
 
 VIDEO_AGGREGATION_FREQUENCY = os.getenv("VIDEO_AGGREGATION_FREQUENCY", 10)
@@ -52,7 +52,7 @@ def generate_video_items(amount=5):
     Generate a list of random video items
     '''
     items = []
-    for i in range(amount):
+    for _ in range(amount):
         yotube_id_data = YoutubeIdSchema().load({
             'kind': 'youtube#video',
             'videoId': generate_id(11)
@@ -74,6 +74,9 @@ def generate_video_items(amount=5):
                     'url': 'https://via.placeholder.com/480x360.png'
                 }
             },
+            "liveBroadcastContent": "none",
+            "channelTitle": "Channel Title",
+            "publishTime": generate_random_date_in_interval()
         }
 
         snippet_data = YoutubeSnippetSchema().load(snippet)
@@ -83,15 +86,12 @@ def generate_video_items(amount=5):
             'etag': generate_etag(),
             'id': yotube_id_data,
             "snippet": snippet_data,
-            "liveBroadcastContent": "none",
-            "channelTitle": "Channel Title",
-            "publishTime": generate_random_date_in_interval()
         }
         items.append(video)
     return items
 
 
-@app.route('/videos')
+@app.route('/search')
 def videos():
     '''
     Generates a mock response for youtube videos api

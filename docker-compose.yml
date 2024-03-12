@@ -12,7 +12,7 @@ services:
   api:
     image: yt-aggregator
     build: .
-    command: ["bash", "-c", "sleep 5 && python api/server.py"]
+    command: ["bash", "-c", "sleep 5 && bash run.sh"]
     env_file:
       - dev/configs/db.env
       - dev/configs/yt.env
@@ -23,9 +23,10 @@ services:
 
   video-aggregation-worker:
     image: yt-aggregator
-    command: ["bash", "-c", "sleep 5 && video_aggregation_worker"]
+    command: ["bash", "-c", "sleep 10 && video_aggregation_worker"]
     env_file:
       - dev/configs/yt.env
+      - dev/configs/db.env
     depends_on:
       - database
 

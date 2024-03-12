@@ -1,5 +1,7 @@
 import os
 
+from marshmallow import Schema
+
 from flask.views import MethodView
 
 from core.views.response import APIListResponse, APIDataResponse
@@ -8,9 +10,9 @@ from db.models.base import Base
 DEFAULT_PAGINATE_BY = os.getenv("DEFAULT_PAGINATE_BY", 10)
 
 class BaseView(MethodView):
-    get_schema = None
+    get_schema: Schema = None
     model: Base = None
-    post_schema = None
+    post_schema: Schema = None
     
     # Filters for the model
     get_filters = None
@@ -38,12 +40,12 @@ class BaseView(MethodView):
                     objects = self.model.filter()
                 
                 # Apply pagination and ordering
-                if self.order_by:
+                if self.order_by is not None:
                     objects = objects.order_by(self.order_by)
                 
                 objects = objects.limit(limit).offset(offset).all()
                 
-                objects_dump = self.get_schema.dump(objects, many=True)
+                objects_dump = self.get_schema.dump(obj=objects, many=True)
                 return APIListResponse(
                     data=objects_dump, status_code=200, count=len(objects_dump)
                 )
