@@ -17,7 +17,7 @@ class YoutubeVideoSchema(Schema):
     id = fields.Nested(YoutubeIdSchema, required=True)
     channelTitle = fields.String(required=True)
     liveBroadcastContent = fields.String(required=True)
-    publishTime = fields.DateTime(required=True)
+    publishTime = fields.String(required=True)
     snippet = fields.Nested(YoutubeSnippetSchema, required=True)
     
 class YoutubeSearchSchema(Schema):

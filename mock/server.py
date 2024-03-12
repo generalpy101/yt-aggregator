@@ -1,9 +1,13 @@
 import random
+import os
 from enum import Enum
-from datetime import datetime
-from flask import Flask
+from datetime import datetime, timedelta
+from flask import Flask, jsonify
 
 from mock.schema import YoutubeVideoSchema, YoutubeSearchSchema, YoutubeIdSchema, YoutubeSnippetSchema
+
+
+VIDEO_AGGREGATION_FREQUENCY = os.getenv("VIDEO_AGGREGATION_FREQUENCY", 10)
 
 app = Flask(__name__)
 
@@ -29,7 +33,18 @@ def generate_id(length=5):
     '''
     Generate a list of random video ids
     '''
-    return ''.join(random.choice('0123456789abcdef') for i in range(length))
+    return ''.join(random.choice('0123456789abcdef') for i in range(length)) 
+
+def generate_random_date_in_interval():
+    # Generate a randome interval between now and VIDEO_AGGREGATION_FREQUENCY
+    random_interval = random.randint(0, VIDEO_AGGREGATION_FREQUENCY)
+    
+    date = datetime.now() - timedelta(seconds=random_interval)
+    
+    # Convert date to RFC3339
+    # Eg: 2024-03-07T09:30:22Z
+    date = date.isoformat().split('.')[0] + "Z"
+    return date
 
 
 def generate_video_items(amount=5):
@@ -44,7 +59,7 @@ def generate_video_items(amount=5):
         })
 
         snippet = {
-            'publishedAt': datetime.now().isoformat(),
+            'publishedAt': generate_random_date_in_interval(),
             'channelId': generate_id(24),
             'title': 'Video Title',
             'description': 'Video Description',
@@ -70,7 +85,7 @@ def generate_video_items(amount=5):
             "snippet": snippet_data,
             "liveBroadcastContent": "none",
             "channelTitle": "Channel Title",
-            "publishTime": datetime.now().isoformat()
+            "publishTime": generate_random_date_in_interval()
         }
         items.append(video)
     return items
@@ -103,7 +118,7 @@ def videos():
     # Loadings the response data into a schema to ensure it is valid
     data = YoutubeSearchSchema().load(response)
 
-    return YoutubeSearchSchema().dumps(data)
+    return jsonify(YoutubeSearchSchema().dump(data))
 
 if __name__ == '__main__':
     app.run(debug=True, port=8081, host='0.0.0.0')
