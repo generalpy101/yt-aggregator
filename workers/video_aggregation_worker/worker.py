@@ -28,9 +28,11 @@ def main():
 
     while True:
         try:
-            print(last_requested_at)
             aggregate_videos(last_requested_at)
             last_requested_at = current_time_RFC3339()
+        except KeyboardInterrupt:
+            print("Stopping video aggregation worker...")
+            break
         except Exception as e:
             print(f"An error occurred: {e}")
         finally:

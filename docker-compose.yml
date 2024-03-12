@@ -1,12 +1,36 @@
 version: '3.8'
 services:
+  database:
+    image: postgres:15
+    env_file:
+      - dev/configs/db.env
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./db-data:/var/lib/postgresql/data
+
   api:
     image: yt-aggregator
     build: .
-    command: ["bash", "-c", "sleep 5"]
+    command: ["bash", "-c", "sleep 5 && python api/server.py"]
+    env_file:
+      - dev/configs/db.env
+      - dev/configs/yt.env
+    depends_on:
+      - database
+    ports:
+      - "8080:8080"
 
   video-aggregation-worker:
     image: yt-aggregator
     command: ["bash", "-c", "sleep 5 && video_aggregation_worker"]
     env_file:
       - dev/configs/yt.env
+    depends_on:
+      - database
+
+  mock-server:
+    image: yt-aggregator
+    command: ["bash", "-c", "sleep 5 && python mock/server.py"]
+    ports:
+      - "8081:8081"
